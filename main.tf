@@ -55,12 +55,19 @@ resource "google_dns_record_set" "a_record" {
   rrdatas = [google_compute_address.static_ip.address]
 }
 
-# CNAME Record for www.informationsecurity.cloud
-resource "google_dns_record_set" "www_cname" {
-  name         = "www.informationsecurity.cloud."  # Subdomain
-  type         = "CNAME"
-  ttl          = 20                                # Same TTL as the A record
-  managed_zone = google_dns_managed_zone.dns_zone.name
+# Reverse DNS Zone
+resource "google_dns_managed_zone" "reverse_dns_zone" {
+  name        = "reverse-dns-zone"
+  dns_name    = "153.201.45.34.in-addr.arpa."
+  description = "Reverse DNS zone for 34.45.201.153"
+}
 
-  rrdatas = ["informationsecurity.cloud."]         # Points to the root domain
+# PTR Record
+resource "google_dns_record_set" "ptr_record" {
+  name         = "153.201.45.34.in-addr.arpa."
+  type         = "PTR"
+  ttl          = 20
+  managed_zone = google_dns_managed_zone.reverse_dns_zone.name
+
+  rrdatas = ["informationsecurity.cloud."]
 }
