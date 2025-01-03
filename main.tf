@@ -24,8 +24,9 @@ resource "google_compute_firewall" "firewallExt" {
 # Compute Instance
 resource "google_compute_instance" "instance" {
   name         = "dns-compute-instance"
-  machine_type = "e2-micro"        # Cost-effective option
+  machine_type = "e2-medium"        # Cost-effective option
   zone         = "us-central1-a"  # Adjust to your preferred zone
+  allow_stopping_for_update = true       
 
   boot_disk {
     initialize_params {
@@ -47,38 +48,4 @@ resource "google_compute_instance" "instance" {
         root:${file("./ssh-key/key1.pub")}
         EOT
     }
-}
-
-# DNS Zone
-resource "google_dns_managed_zone" "dns_zone" {
-  name        = "dns-zone"
-  dns_name    = "informationsecurity.cloud."       # Replace with your domain name
-  description = "DNS zone"
-}
-
-# A Record in DNS Zone
-resource "google_dns_record_set" "a_record" {
-  name         = "informationsecurity.cloud."      # Root domain
-  type         = "A"
-  ttl          = 20
-  managed_zone = google_dns_managed_zone.dns_zone.name
-
-  rrdatas = [google_compute_address.static_ip.address]
-}
-
-# Reverse DNS Zone
-resource "google_dns_managed_zone" "reverse_dns_zone" {
-  name        = "reverse-dns-zone"
-  dns_name    = "153.201.45.34.in-addr.arpa."
-  description = "Reverse DNS zone for 34.45.201.153"
-}
-
-# PTR Record
-resource "google_dns_record_set" "ptr_record" {
-  name         = "153.201.45.34.in-addr.arpa."
-  type         = "PTR"
-  ttl          = 20
-  managed_zone = google_dns_managed_zone.reverse_dns_zone.name
-
-  rrdatas = ["informationsecurity.cloud."]
 }
