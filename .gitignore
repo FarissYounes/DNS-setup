@@ -1,0 +1,10 @@
+# Ignoring terraform config files
+.terraform.lock.hcl
+inforsec-9f5acda74ec2.json:Zone.Identifier
+key.json
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+
+# ssh keys
+ssh-key/
