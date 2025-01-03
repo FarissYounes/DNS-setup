@@ -10,6 +10,17 @@ resource "google_compute_address" "static_ip" {
   region = "us-central1"          # Adjust to match your Compute Instance region
 }
 
+resource "google_compute_firewall" "firewallExt" {
+  name    = "firewall-ext"
+  network = "default"
+
+  allow {
+    protocol = "all"
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
 # Compute Instance
 resource "google_compute_instance" "instance" {
   name         = "dns-compute-instance"
