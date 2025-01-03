@@ -43,8 +43,8 @@ resource "google_compute_instance" "instance" {
 
     metadata = {
     ssh-keys = <<EOT
-        dns:./ssh-key/key.pub
-        root:./ssh-key/key1.pub
+        dns:${file("./ssh-key/key.pub")}
+        root:${file("./ssh-key/key1.pub")}
         EOT
     }
 }
